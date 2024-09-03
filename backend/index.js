@@ -4,6 +4,7 @@ const socketIo = require("socket.io");
 const multer = require("multer");
 const sharp = require("sharp");
 const path = require("path");
+const { connectToDatabase } = require("./db");
 
 const app = express();
 const server = http.createServer(app);
@@ -11,25 +12,26 @@ const io = socketIo(server);
 
 const upload = multer({ dest: "uploads/" });
 
-io.on("connection", (socket) => {
-    console.log("A user connected");
+// connectToDatabase();
 
-    socket.on("message", (msg) => {
-        io.emit("message", msg);
+io.on("connection", (socket) => {
+    console.log("New client connected");
+
+    socket.on("message", (data) => {
+        console.log("Message received:", data);
+
+        socket.emit("response", `Server received: ${data}`);
     });
 
     socket.on("disconnect", () => {
-        console.log("User disconnected");
+        console.log("Client disconnected");
     });
 });
 
-app.post("/upload", upload.single("file"), async (req, res) => {
-    if (req.file.mimetype.startsWith("image/")) {
-        await sharp(req.file.path)
-            .resize(500)
-            .toFile(`uploads/${req.file.filename}-resized.jpg`);
-    }
-    res.send("File uploaded and processed");
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/index.html");
 });
 
 server.listen(3001, () => {

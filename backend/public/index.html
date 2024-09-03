@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.io Test</title>
+</head>
+<body>
+  <h1>Socket.io Test</h1>
+  <input id="messageInput" type="text" placeholder="Type a message">
+  <button id="sendButton">Send</button>
+  <p id="response"></p>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Handle form submission
+    document.getElementById('sendButton').addEventListener('click', () => {
+      const message = document.getElementById('messageInput').value;
+      socket.emit('message', message);
+    });
+
+    // Listen for responses from the server
+    socket.on('response', (data) => {
+      document.getElementById('response').innerText = data;
+    });
+  </script>
+</body>
+</html>
