@@ -5,6 +5,7 @@ const multer = require("multer");
 const sharp = require("sharp");
 const path = require("path");
 const { connectToDatabase } = require("./db");
+const appConfigs = require("./configs");
 
 const app = express();
 const server = http.createServer(app);
@@ -20,7 +21,7 @@ io.on("connection", (socket) => {
     socket.on("message", (data) => {
         console.log("Message received:", data);
 
-        socket.emit("response", `Server received: ${data}`);
+        io.emit("responses", `Server received: ${data}`);
     });
 
     socket.on("disconnect", () => {
@@ -34,6 +35,6 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
-server.listen(3001, () => {
+server.listen(appConfigs.app.port, () => {
     console.log("Server listening on port 3001");
 });
