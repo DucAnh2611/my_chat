@@ -25,7 +25,7 @@ const appConfigs = {
         options: {},
     },
     app: {
-        port: 80,
+        port: process.env.PORT,
         prefix: "api",
     },
 };
