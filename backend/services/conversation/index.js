@@ -55,11 +55,12 @@ const ConversationService = {
             if (memberIds) {
                 await Promise.all(
                     memberIds.map((memberId) =>
-                        ConversationMemberService.add(
+                        ConversationMemberService.add({
+                            conversationId: conversationSaved._id,
                             userId,
                             memberId,
-                            ROLE_CONSTANT.MEMBER
-                        )
+                            role: ROLE_CONSTANT.MEMBER,
+                        })
                     )
                 );
             }
