@@ -1,22 +1,24 @@
 require("dotenv").config();
 
 const appConfigs = {
+    frontend: {
+        origin: process.env.FRONTEND_ORIGINS,
+    },
     db: {
         url: process.env.DB_URL,
         name: process.env.DB_NAME,
     },
     encrypt: {
         algorithm: process.env.ENCRYPT_ALGORITHM,
-        iv: process.env.ENCRYPT_IV,
         key: process.env.ENCRYPT_KEY,
     },
     token: {
         access: {
-            name: process.env.TOKEN_ACCESS_KEY,
+            key: process.env.TOKEN_ACCESS_KEY,
             expire: process.env.TOKEN_ACCESS_EXPIRE,
         },
         refresh: {
-            name: process.env.TOKEN_REFRESH_KEY,
+            key: process.env.TOKEN_REFRESH_KEY,
             expire: process.env.TOKEN_REFESH_EXPIRE,
         },
     },

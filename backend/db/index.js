@@ -1,20 +1,10 @@
-const { default: mongoose } = require("mongoose");
-const appConfigs = require("../configs");
+const { initDbConnection } = require("./connection");
+const { initBucket } = require("./bukket");
 
-const dbName = appConfigs.db.name;
-const url = appConfigs.db.url;
+async function initDatabase() {
+    const db = await initDbConnection();
 
-async function connectToDatabase() {
-    mongoose.connect(`${url}/${dbName}`);
-    const database = mongoose.connection;
-
-    database.on("error", (error) => {
-        console.log(error);
-    });
-
-    database.once("connected", () => {
-        console.log("Database Connected");
-    });
+    const bucket = initBucket(db);
 }
 
-module.exports = { connectToDatabase };
+module.exports = { initDatabase };
