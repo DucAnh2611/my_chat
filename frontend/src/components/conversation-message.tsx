@@ -6,8 +6,10 @@ import useSocket from "@/hook/useSocket";
 import { IConversationDetail } from "@/interface/conversation";
 import { IMember } from "@/interface/member";
 import { IMessage } from "@/interface/message";
+import { isTimeDifferenceMoreThanXMinutes } from "@/lib/time";
+import dayjs from "dayjs";
 import { LoaderIcon } from "lucide-react";
-import { UIEvent, useEffect, useState } from "react";
+import { Fragment, UIEvent, useEffect, useState } from "react";
 import MemberMessage from "./member-message";
 
 export default function ConversationMessage() {
@@ -122,16 +124,42 @@ export default function ConversationMessage() {
             onScroll={handleScroll}
         >
             {messages.map((message, index) => (
-                <MemberMessage
-                    message={message}
-                    meId={me._id}
-                    isLink={
-                        index < messages.length &&
-                        messages[index + 1] &&
-                        messages[index + 1].member._id === message.member._id
-                    }
-                    key={message._id}
-                />
+                <Fragment key={message._id}>
+                    <MemberMessage
+                        message={message}
+                        meId={me._id}
+                        isLink={
+                            messages[index + 1] &&
+                            messages[index + 1].member._id ===
+                                message.member._id &&
+                            !isTimeDifferenceMoreThanXMinutes(
+                                messages[index + 1].sentAt,
+                                message.sentAt,
+                                15
+                            )
+                        }
+                        key={message._id}
+                    />
+                    {messages[index + 1] &&
+                    isTimeDifferenceMoreThanXMinutes(
+                        messages[index + 1].sentAt,
+                        message.sentAt,
+                        15
+                    ) ? (
+                        <p className="w-full text-xs text-muted-foreground text-center my-3">
+                            {dayjs(message.sentAt).format(
+                                dayjs(message.sentAt).isSame(
+                                    dayjs(new Date()),
+                                    "date"
+                                )
+                                    ? "HH:mm A"
+                                    : "dddd, MMMM D, YYYY h:mm A"
+                            )}
+                        </p>
+                    ) : (
+                        <></>
+                    )}
+                </Fragment>
             ))}
             {loading && canScroll && (
                 <div className="flex items-center justify-center w-full h-fit py-5">

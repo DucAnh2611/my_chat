@@ -14,7 +14,6 @@ const WebpagePreview = ({ url = "" }: { url: string }) => {
         const foundUrl = url.match(/https?:\/\/[^\s]+/);
         if (foundUrl) {
             const data = await fetchPreviewData(foundUrl[0]);
-            console.log(data);
             setPreviewData(data);
         }
     };

@@ -27,11 +27,13 @@ export default function ConversationList() {
     );
     const [page, SetPage] = useState<number>(1);
 
-    const onViewConversation = (conversationId: string) => () => {
-        if (openNav) setOpen(false);
+    const onViewConversation =
+        (conversationId: string, changeOpenNav: boolean = false) =>
+        () => {
+            if (openNav && changeOpenNav) setOpen(false);
 
-        navigate(`/${conversationId}`);
-    };
+            navigate(`/${conversationId}`);
+        };
 
     const getList = async (page: number) => {
         const call = await listConversation(page);
@@ -72,7 +74,7 @@ export default function ConversationList() {
             )}
             <Card
                 className={cn(
-                    "flex-1 w-full overflow-auto box-border p-2 flex flex-col gap-2"
+                    "flex-1 w-full overflow-auto box-border p-2 flex-col gap-2 hidden tablet:flex"
                 )}
             >
                 {list.map((item) => (
@@ -86,6 +88,80 @@ export default function ConversationList() {
                                 : ""
                         )}
                         onClick={onViewConversation(item._id)}
+                    >
+                        <div className="flex gap-3 items-start justify-start flex-1 overflow-hidden w-full">
+                            <div>
+                                <Avatar>
+                                    <Avatar className="w-full aspect-square">
+                                        <AvatarImage
+                                            src={joinApiUrl(
+                                                "media",
+                                                item.image || ""
+                                            )}
+                                        />
+                                        <AvatarFallback className="bg-primary text-background">
+                                            {item.name.charAt(0) || "G"}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </Avatar>
+                            </div>
+                            <div className="flex-1 overflow-hidden text-left flex flex-col justify-center">
+                                <p className="w-full line-clamp-1 whitespace-nowrap text-sm font-medium">
+                                    {item.name}
+                                </p>
+
+                                {item.lastestMessage ? (
+                                    <div className="flex gap-2 w-full items-center">
+                                        <p className="flex-1 overflow-hidden line-clamp-1 whitespace-nowrap text-xs font-light text-muted-foreground">
+                                            {`${item.lastestMessage.member.nickname}: ${item.lastestMessage.text}`}
+                                        </p>
+                                        <p className="w-fit whitespace-nowrap text-xs text-foreground">
+                                            {dayjs(
+                                                new Date(
+                                                    item.lastestMessage.sentAt
+                                                )
+                                            ).format(
+                                                `HH:mm ${
+                                                    dayjs(
+                                                        new Date(
+                                                            item.lastestMessage.sentAt
+                                                        )
+                                                    ).isSame(
+                                                        dayjs(new Date()),
+                                                        "date"
+                                                    )
+                                                        ? ""
+                                                        : "MM/DD/YYYY"
+                                                }`
+                                            )}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <p className="w-full whitespace-nowrap text-xs text-muted-foreground">
+                                        Không có tin nhắn mới
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </Button>
+                ))}
+            </Card>
+            <Card
+                className={cn(
+                    "flex-1 w-full overflow-auto box-border p-2 flex flex-col gap-2 tablet:hidden "
+                )}
+            >
+                {list.map((item) => (
+                    <Button
+                        key={item._id}
+                        variant={"ghost"}
+                        className={cn(
+                            "w-full hover:bg rounded-sm p-3 box-border h-fit",
+                            conversation && conversation._id === item._id
+                                ? "bg-accent"
+                                : ""
+                        )}
+                        onClick={onViewConversation(item._id, true)}
                     >
                         <div className="flex gap-3 items-start justify-start flex-1 overflow-hidden w-full">
                             <div>

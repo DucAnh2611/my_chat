@@ -27,10 +27,6 @@ export default function MemberMessage({
         setFoundLinks(links);
     };
 
-    const splitText = (inputText: string) => {
-        return [];
-    };
-
     useEffect(() => {
         checkForLinks(message.text);
     }, [message]);
@@ -71,8 +67,8 @@ export default function MemberMessage({
             </div>
             <div
                 className={cn(
-                    "flex flex-col gap-0.5 items-start w-fit max-w-[70%] max-tablet:max-w-[60%]",
-                    isMeSent ? "justify-end" : "justify-start"
+                    "flex flex-col gap-0.5 w-fit max-w-[60%] max-tablet:max-w-[60%]",
+                    isMeSent ? "items-end" : "items-start"
                 )}
             >
                 <p
@@ -98,11 +94,15 @@ export default function MemberMessage({
                 {foundLinks.length !== 0 && (
                     <div
                         className={cn(
-                            "max-w-[50%] h-fit flex flex-col gap-0.5 pb-2"
+                            "w-fit h-fit flex flex-col gap-0.5 pb-2",
+                            isMeSent ? "items-end" : "items-start"
                         )}
                     >
-                        {foundLinks.map((link) => (
-                            <div key={link} className="w-fit h-auto">
+                        {foundLinks.map((link: string) => (
+                            <div
+                                key={link}
+                                className="w-fit h-auto max-w-[400px]"
+                            >
                                 <a
                                     href={link}
                                     className="text-xs text-muted-foreground hover:underline"
