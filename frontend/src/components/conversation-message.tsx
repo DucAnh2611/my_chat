@@ -13,7 +13,7 @@ import MemberMessage from "./member-message";
 export default function ConversationMessage() {
     const { conversation } = useConversation();
     const { me } = useUser();
-    const socket = useSocket();
+    const { socket, isConnected } = useSocket();
 
     const [conv, SetConv] = useState<IConversationDetail>();
     const [messages, SetMessages] = useState<IMessage[]>([]);
@@ -69,16 +69,15 @@ export default function ConversationMessage() {
     }, [conv, skip]);
 
     useEffect(() => {
-        if (!socket) return;
+        if (!isConnected || !socket) return;
+
         if (conv) {
             if (conversation && conv._id !== conversation._id) {
                 socket.emit(SOCKET_CONSTANT.CONVERSATION.CLOSE, {
                     conversationId: conv._id,
                 });
             }
-        }
-
-        if (!join && conv) {
+            console.log("[OPENING]", conv._id);
             socket.emit(SOCKET_CONSTANT.CONVERSATION.OPEN, {
                 conversationId: conv._id,
             });
@@ -87,6 +86,7 @@ export default function ConversationMessage() {
         socket.on(
             SOCKET_CONSTANT.CONVERSATION.OPEN,
             ({ success, conversationId }) => {
+                console.log("[OPEN]", conversationId);
                 SetJoin(success);
             }
         );
@@ -104,7 +104,13 @@ export default function ConversationMessage() {
                 ]);
             }
         );
-    }, [socket, conversation, conv]);
+
+        return () => {
+            socket.off(SOCKET_CONSTANT.CONVERSATION.OPEN);
+            socket.off(SOCKET_CONSTANT.CONVERSATION.CLOSE);
+            socket.off(SOCKET_CONSTANT.MESSAGE.SENT);
+        };
+    }, [isConnected, socket, conversation, conv]);
 
     if (!conversation || !me) {
         return <></>;
