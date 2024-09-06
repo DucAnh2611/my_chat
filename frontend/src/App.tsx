@@ -10,6 +10,7 @@ function App() {
             <UserProvider>
                 <div className="w-screen h-screen font-sans">
                     <RouterProvider router={router} />
+
                     <Toaster />
                 </div>
             </UserProvider>

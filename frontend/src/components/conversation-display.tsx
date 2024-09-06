@@ -7,6 +7,7 @@ export default function ConversationDisplay() {
             <div className="flex-1 w-full box-border overflow-hidden">
                 <ConversationMessage />
             </div>
+
             <div className="w-full h-fit">
                 <ConversationSend />
             </div>
