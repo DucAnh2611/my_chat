@@ -30,7 +30,7 @@ export interface IConversationWithLastestMessage extends IConversation {
 }
 
 export interface IConversationDetail extends IConversation {
-    configs: object;
+    configs: any;
 }
 
 export interface IConversationListResponse {

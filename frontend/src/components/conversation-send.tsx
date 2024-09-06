@@ -48,7 +48,7 @@ export default function ConversationSend() {
     }, [conversation]);
 
     return (
-        <div className="w-full h-fit border-t box-border p-3 flex gap-0.5 items-start">
+        <div className="w-full h-fit border-t box-border p-3 flex gap-0.5 items-start bg-background backdrop-blur-sm">
             <div className="flex gap-0 items-start">
                 <Button
                     size="sm"

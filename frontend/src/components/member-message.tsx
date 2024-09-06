@@ -1,26 +1,52 @@
 import { joinApiUrl } from "@/constant/api";
+import useConversation from "@/hook/useConversation";
 import { IMessage } from "@/interface/message";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import WebpagePreview from "./webpage-preview";
 
 interface IMemerMessageProps {
     message: IMessage;
     meId: string;
     isLink: boolean;
 }
+const URL_REGEX = /(https?:\/\/[^\s]*)/g;
 
 export default function MemberMessage({
     message,
     meId,
     isLink,
 }: IMemerMessageProps) {
+    const [foundLinks, setFoundLinks] = useState<string[]>([]);
+    const { conversation } = useConversation();
+
+    const checkForLinks = (inputText: string) => {
+        const links = inputText.match(URL_REGEX) || [];
+        setFoundLinks(links);
+    };
+
+    const splitText = (inputText: string) => {
+        return [];
+    };
+
+    useEffect(() => {
+        checkForLinks(message.text);
+    }, [message]);
+
     const isMeSent = meId === message.member.user._id;
+
+    if (!conversation) return <></>;
+
+    const { theme } = conversation.configs;
+
     return (
         <div
             className={cn(
                 "w-full flex gap-2 items-start group",
-                isMeSent ? "flex-row-reverse" : "flex-row"
+                isMeSent ? "flex-row-reverse" : "flex-row",
+                isLink ? "" : "mt-2"
             )}
         >
             <div className={cn("relative h-auto  flex items-end justify-end")}>
@@ -45,20 +71,50 @@ export default function MemberMessage({
             </div>
             <div
                 className={cn(
-                    "flex flex-col gap-1 items-start w-fit max-w-[70%]",
-                    isMeSent ? "justify-start" : "justify-end"
+                    "flex flex-col gap-0.5 items-start w-fit max-w-[70%] max-tablet:max-w-[60%]",
+                    isMeSent ? "justify-end" : "justify-start"
                 )}
             >
                 <p
-                    className={cn(
-                        "text-sm font-normal w-fit rounded-md border px-2 py-1 whitespace-pre-wrap break-words overflow-hidden",
+                    style={
                         isMeSent
-                            ? "bg-primary border-transparent text-background"
-                            : "bg-background border-muted text-foreground"
+                            ? {
+                                  background: theme.sender.primary,
+                                  borderColor: theme.sender.border,
+                                  color: theme.sender.text,
+                              }
+                            : {
+                                  background: theme.receiver.primary,
+                                  borderColor: theme.receiver.border,
+                                  color: theme.receiver.text,
+                              }
+                    }
+                    className={cn(
+                        "text-sm font-normal w-fit rounded-md border px-2 py-1 whitespace-pre-wrap break-words overflow-hidden"
                     )}
                 >
                     {message.text}
                 </p>
+                {foundLinks.length !== 0 && (
+                    <div
+                        className={cn(
+                            "max-w-[50%] h-fit flex flex-col gap-0.5 pb-2"
+                        )}
+                    >
+                        {foundLinks.map((link) => (
+                            <div key={link} className="w-fit h-auto">
+                                <a
+                                    href={link}
+                                    className="text-xs text-muted-foreground hover:underline"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <WebpagePreview url={link} />
+                                </a>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="flex items-center text-muted-foreground h-full">
                 <p className="w-fit whitespace-nowrap text-xs group-hover:block hidden duration-50">

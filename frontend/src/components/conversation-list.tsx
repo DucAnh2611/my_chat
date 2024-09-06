@@ -110,7 +110,7 @@ export default function ConversationList() {
 
                                 {item.lastestMessage ? (
                                     <div className="flex gap-2 w-full items-center">
-                                        <p className="flex-1 overflow-hidden line-clamp-1 whitespace-nowrap text-sm text-muted-foreground">
+                                        <p className="flex-1 overflow-hidden line-clamp-1 whitespace-nowrap text-xs font-light text-muted-foreground">
                                             {`${item.lastestMessage.member.nickname}: ${item.lastestMessage.text}`}
                                         </p>
                                         <p className="w-fit whitespace-nowrap text-xs text-foreground">
