@@ -51,7 +51,6 @@ export default function DialogSelectEmoji({
                     categories={[]}
                     lazyLoadEmojis
                     skinTonesDisabled
-                    autoFocusSearch
                 />
             </DropdownMenuContent>
         </DropdownMenu>
