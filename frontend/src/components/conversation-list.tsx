@@ -1,9 +1,13 @@
 import { listConversation } from "@/api/action/conversation";
 import { joinApiUrl } from "@/constant/api";
+import { SOCKET_CONSTANT } from "@/constant/socket";
 import useConversation from "@/hook/useConversation";
 import useNav from "@/hook/useNav";
 import useUser from "@/hook/userUser";
+import useSocket from "@/hook/useSocket";
 import { IConversationWithLastestMessage } from "@/interface/conversation";
+import { IMember } from "@/interface/member";
+import { IMessage } from "@/interface/message";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -20,6 +24,7 @@ export default function ConversationList() {
 
     const { me } = useUser();
     const { open: openNav, setOpen } = useNav();
+    const { socket, isConnected } = useSocket();
 
     const { conversation } = useConversation();
     const [list, SetList] = useState<Array<IConversationWithLastestMessage>>(
@@ -51,6 +56,29 @@ export default function ConversationList() {
     useEffect(() => {
         getList(page);
     }, [page]);
+
+    useEffect(() => {
+        if (!isConnected || !socket) return;
+
+        socket.on(
+            SOCKET_CONSTANT.MESSAGE.SENT,
+            ({ message, member }: { message: IMessage; member: IMember }) => {
+                SetList((l) =>
+                    l.map((c) => ({
+                        ...c,
+                        lastestMessage:
+                            c._id === message.conversation
+                                ? { ...message, member, seens: [] }
+                                : c.lastestMessage,
+                    }))
+                );
+                console.log(message);
+            }
+        );
+        return () => {
+            socket.off(SOCKET_CONSTANT.MESSAGE.SENT);
+        };
+    }, [isConnected, socket]);
 
     if (!openNav) return <></>;
 

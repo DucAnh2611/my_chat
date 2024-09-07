@@ -33,12 +33,12 @@ const WebpagePreview = ({ url = "" }: { url: string }) => {
                                 previewData.data.url}
                         </p>
                     </div>
-                    <div className="bg-primary w-full h-auto flex items-center justify-center">
+                    <div className="bg-primary flex items-center justify-center">
                         {previewData.data.image && (
                             <img
                                 src={previewData.data.image.url}
                                 alt="preview"
-                                style={{ maxWidth: "100%" }}
+                                className="object-cover"
                             />
                         )}
                     </div>

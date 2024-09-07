@@ -8,7 +8,7 @@ function App() {
     return (
         <SocketProvider>
             <UserProvider>
-                <div className="w-screen h-screen font-sans">
+                <div className="w-[100dvw] h-[100dvh] font-sans">
                     <RouterProvider router={router} />
 
                     <Toaster />

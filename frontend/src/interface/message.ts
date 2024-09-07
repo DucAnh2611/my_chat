@@ -9,6 +9,7 @@ export interface ISendMessage {
 export interface IMessage {
     _id: string;
     member: IMember;
+    conversation: string;
     text: string;
     type: string;
     sentAt: Date;

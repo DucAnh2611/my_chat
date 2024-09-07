@@ -1,7 +1,9 @@
 import { sendMessage } from "@/api/action/message";
 import useConversation from "@/hook/useConversation";
-import { ImageIcon, MicIcon, SendHorizonal } from "lucide-react";
+import { MouseDownEvent } from "emoji-picker-react/dist/config/config";
+import { ImageIcon, MicIcon, SendHorizonal, SmileIcon } from "lucide-react";
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import DialogSelectEmoji from "./dialog-emoji";
 import DynamicTextarea from "./dynamic-textarea";
 import { Button } from "./ui/button";
 
@@ -9,11 +11,17 @@ export default function ConversationSend() {
     const { conversation } = useConversation();
 
     const messageRef = useRef<HTMLTextAreaElement | null>(null);
+
     const [message, SetMessage] = useState<string>("");
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         SetMessage(e.target.value);
     };
+
+    const handleSelectEmoji: MouseDownEvent = (emoji, event) => {
+        SetMessage((m) => `${m}${emoji.emoji}`);
+    };
+
     const handleSend = async () => {
         await send(message, "TEXT");
     };
@@ -78,6 +86,19 @@ export default function ConversationSend() {
                     className="resize-none overflow-auto break-words whitespace-normal min-h-0 h-auto leading-5 focus-visible:ring-transparent"
                 />
             </div>
+
+            <DialogSelectEmoji
+                onSelect={handleSelectEmoji}
+                trigger={
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className="rounded-full"
+                    >
+                        <SmileIcon size={15} />
+                    </Button>
+                }
+            />
             <div>
                 <Button size="icon" variant="ghost" onClick={handleSend}>
                     {message.length !== 0 ? (
