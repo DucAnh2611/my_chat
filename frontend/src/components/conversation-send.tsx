@@ -6,7 +6,6 @@ import { ImageIcon, MicIcon, SendHorizonal, SmileIcon, X } from "lucide-react";
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import DialogSelectEmoji from "./dialog-emoji";
 import DynamicTextarea from "./dynamic-textarea";
-import { toast } from "./hooks/use-toast";
 import { Button } from "./ui/button";
 
 export default function ConversationSend() {
@@ -42,9 +41,7 @@ export default function ConversationSend() {
     const send = async (message: ISendMessage) => {
         const trimMessage = message.text.trim();
 
-        toast({ description: "Some thing" });
-
-        if (!conversation && trimMessage) {
+        if (conversation && trimMessage) {
             const sent = await sendMessage(message);
 
             if (sent.success) {
