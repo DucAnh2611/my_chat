@@ -1,13 +1,13 @@
-const ERROR_CODE_CONSTANT = {
+export const ERROR_CODE_CONSTANT = {
     NOT_MATCH_PASSWORD: "NOT_MATCH_PASSWORD",
-    INVALID: (type) => `INVALID_${type.toUpperCase()}`,
-    NOT_EXIST: (type) => `NOT_EXIST_${type.toUpperCase()}`,
-    EXIST: (type) => `EXIST_${type.toUpperCase()}`,
-    EXPIRE: (type) => `EXPIRE_${type.toUpperCase()}`,
+    INVALID: (type: string) => `INVALID_${type.toUpperCase()}`,
+    NOT_EXIST: (type: string) => `NOT_EXIST_${type.toUpperCase()}`,
+    EXIST: (type: string) => `EXIST_${type.toUpperCase()}`,
+    EXPIRE: (type: string) => `EXPIRE_${type.toUpperCase()}`,
     INTERNAL: "INTERNAL",
 };
 
-const RESPONSE_CODE_CONSTANT = {
+export const RESPONSE_CODE_CONSTANT = {
     NOT_FOUND: 404,
     BAD_REQUEST: 400,
     FORBIDDEN: 403,
@@ -15,7 +15,7 @@ const RESPONSE_CODE_CONSTANT = {
     SUCCESS: 200,
 };
 
-const OBJECT_TYPE = {
+export const OBJECT_TYPE = {
     USER: {
         BASE: "USER",
         PASSWORD: "USER_PASSWORD",
@@ -34,5 +34,3 @@ const OBJECT_TYPE = {
         REFRESH: "TOKEN_REFRESH",
     },
 };
-
-module.exports = { ERROR_CODE_CONSTANT, RESPONSE_CODE_CONSTANT, OBJECT_TYPE };

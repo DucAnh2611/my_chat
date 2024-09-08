@@ -156,7 +156,6 @@ const UserService = {
             isMe: true,
             description: true,
         });
-
         if (!userFind) {
             return {
                 success: false,

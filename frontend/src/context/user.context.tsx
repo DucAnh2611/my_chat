@@ -7,12 +7,14 @@ export interface IUserContext {
     isAuth: boolean;
     token: string | undefined;
     me: IUser | undefined;
+    setIsAuth: (auth: boolean) => void;
 }
 
 export const UserContext = createContext<IUserContext>({
     isAuth: false,
     token: undefined,
     me: undefined,
+    setIsAuth: (auth: boolean) => {},
 });
 
 export default function UserProvider({ children }: { children: ReactNode }) {
@@ -36,12 +38,16 @@ export default function UserProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const setIsAuth = (auth: boolean) => {
+        SetIsAuth(auth);
+    };
+
     useEffect(() => {
         getUserInfo();
-    }, []);
+    }, [isAuth]);
 
     return (
-        <UserContext.Provider value={{ isAuth, token, me }}>
+        <UserContext.Provider value={{ isAuth, token, me, setIsAuth }}>
             {children}
         </UserContext.Provider>
     );

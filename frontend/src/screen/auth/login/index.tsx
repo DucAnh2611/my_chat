@@ -12,17 +12,17 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import useUser from "@/hook/userUser";
 import { setLocalStorage } from "@/lib/str";
 import { LoginSchema } from "@/schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 export function LoginSceen() {
-    const navigate = useNavigate();
+    const { setIsAuth } = useUser();
     const [show, SetShow] = useState<boolean>(false);
 
     const toggleShow = () => {
@@ -51,8 +51,7 @@ export function LoginSceen() {
                 description: "Đăng nhập thành công",
             });
 
-            // navigate("/");
-            window.location.reload();
+            setIsAuth(true);
         } else {
             toast({
                 title: "Có lỗi xảy ra",

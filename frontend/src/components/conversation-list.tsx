@@ -13,7 +13,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DialogCreateConversation from "./dialog-create-conversation";
-import DialogLogout from "./dialog-logut";
+import DialogLogout from "./dialog-logout";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";

@@ -24,20 +24,17 @@ const accessTokenCheck = async (req, res, next) => {
 
     const [_bearer, token] = authToken.split(" ");
 
-    const validToken = await verifyToken(token, appConfigs.token.access.key);
-    if (!validToken) {
-        return res
-            .status(403)
-            .json(
-                ResponseJson(
-                    false,
-                    RESPONSE_CODE_CONSTANT.FORBIDDEN,
-                    ERROR_CODE_CONSTANT.INVALID(OBJECT_TYPE.TOKEN.ACCESS)
-                )
-            );
+    const validToken = await verifyToken(
+        token,
+        appConfigs.token.access.key,
+        "ACCESS"
+    );
+    if (validToken.error) {
+        const { status } = validToken.error;
+        return res.status(status).json(validToken.error);
     }
 
-    req.accessPayload = validToken;
+    req.accessPayload = validToken.data;
 
     return next();
 };

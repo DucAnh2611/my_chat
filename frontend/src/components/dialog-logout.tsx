@@ -1,4 +1,5 @@
-import { clearLocalStorage } from "@/lib/str";
+import { logout } from "@/api/action/auth";
+import useUser from "@/hook/userUser";
 import { Button } from "./ui/button";
 import {
     Dialog,
@@ -11,9 +12,12 @@ import {
 } from "./ui/dialog";
 
 export default function DialogLogout() {
-    const onLogout = () => {
-        clearLocalStorage();
-        window.location.reload();
+    const { setIsAuth } = useUser();
+    const onLogout = async () => {
+        const isLogout = await logout();
+        if (isLogout.success) {
+            setIsAuth(false);
+        }
     };
 
     return (

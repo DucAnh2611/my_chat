@@ -24,6 +24,10 @@ export const API_URLS = {
             method: "POST",
             headers: API_HEADERS["ContentType"],
         }),
+        refresh: () => ({
+            path: joinApiUrl("auth/refresh"),
+            method: "GET",
+        }),
     },
     USER: {
         me: () => ({

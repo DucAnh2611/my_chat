@@ -6,3 +6,7 @@ export interface ILogin {
 export interface ILoginResponse {
     accessToken: string;
 }
+
+export interface IRefreshResponse {
+    accessToken: string;
+}

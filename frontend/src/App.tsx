@@ -10,9 +10,8 @@ function App() {
             <UserProvider>
                 <div className="w-[100dvw] h-[100dvh] font-sans">
                     <RouterProvider router={router} />
-
-                    <Toaster />
                 </div>
+                <Toaster />
             </UserProvider>
         </SocketProvider>
     );
