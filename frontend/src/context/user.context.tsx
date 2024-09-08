@@ -39,17 +39,18 @@ export default function UserProvider({ children }: { children: ReactNode }) {
     };
 
     const setIsAuth = (auth: boolean) => {
+        if (!auth) {
+            SetToken(undefined);
+            SetMe(undefined);
+        }
         SetIsAuth(auth);
     };
 
     useEffect(() => {
-        if (isAuth) {
+        if (!isAuth) {
             getUserInfo();
-        } else {
-            SetToken("");
-            SetMe(undefined);
         }
-    }, [isAuth]);
+    }, [isAuth, token]);
 
     return (
         <UserContext.Provider value={{ isAuth, token, me, setIsAuth }}>

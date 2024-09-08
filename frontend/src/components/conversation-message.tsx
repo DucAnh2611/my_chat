@@ -74,12 +74,6 @@ export default function ConversationMessage() {
         if (!isConnected || !socket) return;
 
         if (conv) {
-            if (conversation && conv._id !== conversation._id) {
-                socket.emit(SOCKET_CONSTANT.CONVERSATION.CLOSE, {
-                    conversationId: conv._id,
-                });
-            }
-            console.log("[OPENING]", conv._id);
             socket.emit(SOCKET_CONSTANT.CONVERSATION.OPEN, {
                 conversationId: conv._id,
             });
@@ -88,7 +82,6 @@ export default function ConversationMessage() {
         socket.on(
             SOCKET_CONSTANT.CONVERSATION.OPEN,
             ({ success, conversationId }) => {
-                console.log("[OPEN]", conversationId);
                 SetJoin(success);
             }
         );
@@ -108,9 +101,11 @@ export default function ConversationMessage() {
         );
 
         return () => {
-            socket.off(SOCKET_CONSTANT.CONVERSATION.OPEN);
-            socket.off(SOCKET_CONSTANT.CONVERSATION.CLOSE);
-            socket.off(SOCKET_CONSTANT.MESSAGE.SENT);
+            if (conversation && conv) {
+                socket.emit(SOCKET_CONSTANT.CONVERSATION.CLOSE, {
+                    conversationId: conv._id,
+                });
+            }
         };
     }, [isConnected, socket, conversation, conv]);
 

@@ -8,7 +8,7 @@ export default function withAuth<T extends WithAuthProps>(
     WrappedComponent: ComponentType<T>
 ) {
     const ComponentWithAuth = (props: T) => {
-        const { isAuth } = useUser(); // Get authentication status from the UserContext
+        const { isAuth } = useUser();
         const navigate = useNavigate();
 
         useEffect(() => {
@@ -21,7 +21,6 @@ export default function withAuth<T extends WithAuthProps>(
             return <WrappedComponent {...props} />;
         }
 
-        // Optionally show a loading spinner or fallback UI while checking auth status
         return <div>Loading...</div>;
     };
     return ComponentWithAuth;

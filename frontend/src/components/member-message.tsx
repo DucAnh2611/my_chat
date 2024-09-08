@@ -45,26 +45,34 @@ export default function MemberMessage({
                 isLink ? "" : "mt-2"
             )}
         >
-            <div className={cn("relative h-auto  flex items-end justify-end")}>
-                <div className="w-8 h-8">
-                    <Avatar
-                        className={cn(
-                            "w-full h-full",
-                            isLink ? "invisible" : "visible"
-                        )}
-                    >
-                        <AvatarImage
-                            src={joinApiUrl(
-                                "media",
-                                message.member.user.avatar || ""
+            {!isMeSent && (
+                <div
+                    className={cn(
+                        "relative h-auto  flex items-end justify-end"
+                    )}
+                >
+                    <div className="w-8 h-8">
+                        <Avatar
+                            className={cn(
+                                "w-full h-full",
+                                isLink ? "invisible" : "visible"
                             )}
-                        />
-                        <AvatarFallback>
-                            {message.member.nickname.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
+                        >
+                            <AvatarImage
+                                src={joinApiUrl(
+                                    "media",
+                                    message.member.user.avatar || ""
+                                )}
+                            />
+                            <AvatarFallback>
+                                {message.member.nickname
+                                    .charAt(0)
+                                    .toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                    </div>
                 </div>
-            </div>
+            )}
             <div
                 className={cn(
                     "flex flex-col gap-0.5 w-fit max-w-[60%] max-tablet:max-w-[60%]",
