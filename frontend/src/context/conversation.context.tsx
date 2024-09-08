@@ -38,6 +38,7 @@ export default function ConversationProvider({
 
         if (detail.success && detail.result) {
             SetConversation(detail.result);
+            SetReply(null);
         }
     };
 
