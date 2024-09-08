@@ -14,11 +14,11 @@ const MessageSchema = new mongoose.Schema({
     type: { type: String, enum: Object.values(MESSAGE_CONSTANT.TYPES) },
     emotes: [{ type: Schema.Types.ObjectId, ref: "icon" }],
     seens: [{ type: Schema.Types.ObjectId, ref: "member" }],
-    isPin: { type: Boolean, required: true, default: false },
-    pinBy: {
+    reply: {
         type: Schema.Types.ObjectId,
-        ref: "member",
+        ref: "message",
         required: false,
+        default: null,
     },
     isDelete: { type: Boolean, required: true, default: false },
     sentAt: { type: Date, required: true },

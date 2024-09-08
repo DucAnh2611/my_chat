@@ -106,6 +106,9 @@ export default function ConversationMessage() {
                     conversationId: conv._id,
                 });
             }
+            socket.off(SOCKET_CONSTANT.CONVERSATION.OPEN);
+            socket.off(SOCKET_CONSTANT.CONVERSATION.CLOSE);
+            socket.off(SOCKET_CONSTANT.MESSAGE.SENT);
         };
     }, [isConnected, socket, conversation, conv]);
 

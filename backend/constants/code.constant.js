@@ -21,6 +21,9 @@ const OBJECT_TYPE = {
         PASSWORD: "USER_PASSWORD",
         USERNAME: "USER_USERNAME",
     },
+    MESSSAGE: {
+        BASE: "MESSAGE",
+    },
     CONVERSATION: {
         BASE: "CONVERSATION",
         TYPE: "CONVERSATION_TYPE",

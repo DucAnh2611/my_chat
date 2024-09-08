@@ -3,8 +3,16 @@ import useConversation from "@/hook/useConversation";
 import { IMessage } from "@/interface/message";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
+import { Reply, SmilePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "./ui/tooltip";
 import WebpagePreview from "./webpage-preview";
 
 interface IMemerMessageProps {
@@ -20,11 +28,15 @@ export default function MemberMessage({
     isLink,
 }: IMemerMessageProps) {
     const [foundLinks, setFoundLinks] = useState<string[]>([]);
-    const { conversation } = useConversation();
+    const { conversation, setReply } = useConversation();
 
     const checkForLinks = (inputText: string) => {
         const links = inputText.match(URL_REGEX) || [];
         setFoundLinks(links);
+    };
+
+    const handleClickReply = (message: IMessage) => () => {
+        setReply(message);
     };
 
     useEffect(() => {
@@ -79,57 +91,192 @@ export default function MemberMessage({
                     isMeSent ? "items-end" : "items-start"
                 )}
             >
-                <p
-                    style={
-                        isMeSent
-                            ? {
-                                  background: theme.sender.primary,
-                                  borderColor: theme.sender.border,
-                                  color: theme.sender.text,
-                              }
-                            : {
-                                  background: theme.receiver.primary,
-                                  borderColor: theme.receiver.border,
-                                  color: theme.receiver.text,
-                              }
-                    }
-                    className={cn(
-                        "text-sm font-normal w-fit rounded-md border px-2 py-1 whitespace-pre-wrap break-words overflow-hidden"
-                    )}
-                >
-                    {message.text}
-                </p>
-                {foundLinks.length !== 0 && (
+                {!!message.reply && (
                     <div
                         className={cn(
-                            "w-fit h-fit flex flex-col gap-0.5 pb-2",
+                            "flex flex-col  group/reply",
                             isMeSent ? "items-end" : "items-start"
                         )}
                     >
-                        {foundLinks.map((link: string) => (
-                            <div
-                                key={link}
-                                className="w-fit h-auto max-w-[400px]"
-                            >
-                                <a
-                                    href={link}
-                                    className="text-xs text-muted-foreground hover:underline"
-                                    target="_blank"
-                                    rel="noreferrer"
+                        <div className="flex gap-1 items-center">
+                            <Reply size={10} />
+                            <p className="text-xs">Đã trả lời </p>
+                        </div>
+                        <div
+                            style={{
+                                background: `${
+                                    isMeSent
+                                        ? theme.sender.primary
+                                        : theme.receiver.primary
+                                }`,
+                            }}
+                            className={cn(
+                                "rounded-xl box-border p-2 opacity-60 flex flex-col items-center gap-1 mt-1",
+                                isMeSent ? "rounded-br-sm" : "rounded-bl-sm"
+                            )}
+                        >
+                            <div className="w-full flex gap-1 items-center">
+                                <div className="w-5 h-5">
+                                    <Avatar
+                                        className={cn(
+                                            "w-full h-full",
+                                            isLink ? "invisible" : "visible"
+                                        )}
+                                    >
+                                        <AvatarImage
+                                            src={joinApiUrl(
+                                                "media",
+                                                message.reply.member.user
+                                                    .avatar || ""
+                                            )}
+                                        />
+                                        <AvatarFallback className="text-[10px]">
+                                            {message.reply.member.nickname
+                                                .charAt(0)
+                                                .toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </div>
+                                <p
+                                    style={{
+                                        color: `${
+                                            isMeSent
+                                                ? theme.sender.text
+                                                : theme.receiver.text
+                                        }`,
+                                    }}
+                                    className={cn("text-xs")}
                                 >
-                                    <WebpagePreview url={link} />
-                                </a>
+                                    {message.reply.member.nickname}
+                                </p>
                             </div>
-                        ))}
+                            <div
+                                className={cn(
+                                    "w-fit bg-muted box-border p-1 rounded-sm"
+                                )}
+                            >
+                                <p className="text-xs line-clamp-3 whitespace-pre-wrap group-hover/reply:line-clamp-none ">
+                                    {message.reply.text}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 )}
-            </div>
-            <div className="flex items-center text-muted-foreground h-full">
-                <p className="w-fit whitespace-nowrap text-xs group-hover:block hidden duration-50">
-                    {dayjs(new Date(message.sentAt)).format(
-                        "HH:mm:ss A, MM/DD/YYYY"
-                    )}
-                </p>
+                <TooltipProvider>
+                    <Tooltip delayDuration={200}>
+                        <TooltipTrigger asChild>
+                            <div
+                                className={cn(
+                                    "flex w-fit gap-2",
+                                    !isMeSent
+                                        ? "justify-end flex-row-reverse"
+                                        : "justify-start flex-row"
+                                )}
+                            >
+                                <div
+                                    className={cn(
+                                        "invisible gap-0 flex items-center group-hover:visible",
+                                        isMeSent
+                                            ? "justify-end flex-row-reverse"
+                                            : "justify-start flex-row"
+                                    )}
+                                >
+                                    <Button
+                                        className="rounded-full w-fit h-fit !p-1.5 text-muted-foreground hover:primary"
+                                        size="icon"
+                                        variant="ghost"
+                                    >
+                                        <SmilePlus size={15} />
+                                    </Button>
+                                    <Button
+                                        className="rounded-full w-fit h-fit !p-1.5 text-muted-foreground hover:primary"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={handleClickReply(message)}
+                                    >
+                                        <Reply size={15} />
+                                    </Button>
+                                </div>
+                                <div
+                                    className={cn(
+                                        "flex flex-col gap-0.5 w-fit",
+                                        isMeSent ? "items-end" : "items-start"
+                                    )}
+                                >
+                                    <p
+                                        style={
+                                            isMeSent
+                                                ? {
+                                                      background:
+                                                          theme.sender.primary,
+                                                      borderColor:
+                                                          theme.sender.border,
+                                                      color: theme.sender.text,
+                                                  }
+                                                : {
+                                                      background:
+                                                          theme.receiver
+                                                              .primary,
+                                                      borderColor:
+                                                          theme.receiver.border,
+                                                      color: theme.receiver
+                                                          .text,
+                                                  }
+                                        }
+                                        className={cn(
+                                            "text-sm font-normal w-fit rounded-xl border px-2 py-1 whitespace-pre-wrap break-words overflow-hidden",
+                                            isMeSent
+                                                ? "rounded-r-sm"
+                                                : "rounded-l-sm",
+                                            message.reply
+                                                ? isMeSent
+                                                    ? "rounded-l-md"
+                                                    : "rounded-r-md"
+                                                : ""
+                                        )}
+                                    >
+                                        {message.text}
+                                    </p>
+                                    {foundLinks.length !== 0 && (
+                                        <div
+                                            className={cn(
+                                                "w-fit h-fit flex flex-col gap-0.5 pb-2",
+                                                isMeSent
+                                                    ? "items-end"
+                                                    : "items-start"
+                                            )}
+                                        >
+                                            {foundLinks.map((link: string) => (
+                                                <div
+                                                    key={link}
+                                                    className="w-fit h-auto max-w-[400px]"
+                                                >
+                                                    <a
+                                                        href={link}
+                                                        className="text-xs text-muted-foreground hover:underline"
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                    >
+                                                        <WebpagePreview
+                                                            url={link}
+                                                        />
+                                                    </a>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="left" align="center">
+                            <p className="w-fit whitespace-nowrap text-xs group-hover:block hidden duration-50">
+                                {dayjs(new Date(message.sentAt)).format(
+                                    "HH:mm:ss A, MM/DD/YYYY"
+                                )}
+                            </p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
         </div>
     );

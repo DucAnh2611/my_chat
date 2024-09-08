@@ -26,8 +26,6 @@ export default function UserProvider({ children }: { children: ReactNode }) {
         const localstorage = getLocalStorage();
 
         if (localstorage && !me) {
-            SetIsAuth(true);
-
             const me = await getMe();
 
             if (me.success && me.result) {
@@ -47,10 +45,10 @@ export default function UserProvider({ children }: { children: ReactNode }) {
     };
 
     useEffect(() => {
-        if (!isAuth) {
+        if (!isAuth || (isAuth && !me)) {
             getUserInfo();
         }
-    }, [isAuth, token]);
+    }, [isAuth]);
 
     return (
         <UserContext.Provider value={{ isAuth, token, me, setIsAuth }}>

@@ -1,5 +1,6 @@
 import { detailConversation } from "@/api/action/conversation";
 import { IConversationDetail } from "@/interface/conversation";
+import { IMessage } from "@/interface/message";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 interface IConversationContext {
@@ -7,6 +8,8 @@ interface IConversationContext {
     openSetting: boolean;
     setOpenSetting: (open: boolean) => void;
     setId: (id: string) => void;
+    setReply: (message: IMessage | null) => void;
+    reply: IMessage | null;
 }
 
 export const ConversationContext = createContext<IConversationContext>({
@@ -14,6 +17,8 @@ export const ConversationContext = createContext<IConversationContext>({
     openSetting: false,
     setOpenSetting: (open: boolean) => {},
     setId: (id: string) => {},
+    setReply: (message: IMessage | null) => {},
+    reply: null,
 });
 
 export default function ConversationProvider({
@@ -25,6 +30,7 @@ export default function ConversationProvider({
     const [conversation, SetConversation] =
         useState<IConversationDetail | null>(null);
     const [openSetting, SetOpenSetting] = useState<boolean>(false);
+    const [reply, SetReply] = useState<IMessage | null>(null);
 
     const getConversation = async (id: string) => {
         if (!id) return;
@@ -43,11 +49,17 @@ export default function ConversationProvider({
         SetId(id);
     };
 
+    const setReply = (message: IMessage | null) => {
+        SetReply(message);
+    };
+
     const conversationValue: IConversationContext = {
         conversation,
         openSetting: openSetting,
         setOpenSetting: setOpenSetting,
         setId: setId,
+        setReply: setReply,
+        reply,
     };
 
     useEffect(() => {
