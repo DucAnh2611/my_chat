@@ -1,4 +1,4 @@
-import useUser from "@/hook/userUser";
+import useUser from "@/hook/useUser";
 import { ComponentType, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 

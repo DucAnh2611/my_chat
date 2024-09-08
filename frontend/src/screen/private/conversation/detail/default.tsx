@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import useNav from "@/hook/useNav";
-import useUser from "@/hook/userUser";
+import useUser from "@/hook/useUser";
 
 export default function ConversationDetailDefaultScreen() {
     const { me } = useUser();

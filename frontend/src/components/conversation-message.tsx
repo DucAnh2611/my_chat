@@ -1,8 +1,8 @@
 import { conversationMessage } from "@/api/action/message";
 import { SOCKET_CONSTANT } from "@/constant/socket";
 import useConversation from "@/hook/useConversation";
-import useUser from "@/hook/userUser";
 import useSocket from "@/hook/useSocket";
+import useUser from "@/hook/useUser";
 import { IConversationDetail } from "@/interface/conversation";
 import { IMember } from "@/interface/member";
 import { IMessage } from "@/interface/message";

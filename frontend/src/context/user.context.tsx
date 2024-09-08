@@ -43,7 +43,12 @@ export default function UserProvider({ children }: { children: ReactNode }) {
     };
 
     useEffect(() => {
-        getUserInfo();
+        if (isAuth) {
+            getUserInfo();
+        } else {
+            SetToken("");
+            SetMe(undefined);
+        }
     }, [isAuth]);
 
     return (

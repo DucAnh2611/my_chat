@@ -17,9 +17,7 @@ export const apiCall = async <T>({ path, ...options }: IApiCall) => {
     ) {
         const tryRefresh = await refreshToken();
 
-        if (!tryRefresh.success) {
-            // logout();
-        } else {
+        if (tryRefresh.success) {
             const reCall = await fetch(path, options);
             const reResults: IApiResponse<T> = await reCall.json();
 

@@ -12,7 +12,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useUser from "@/hook/userUser";
+import useUser from "@/hook/useUser";
 import { setLocalStorage } from "@/lib/str";
 import { LoginSchema } from "@/schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";

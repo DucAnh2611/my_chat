@@ -1,5 +1,5 @@
 import { logout } from "@/api/action/auth";
-import useUser from "@/hook/userUser";
+import useUser from "@/hook/useUser";
 import { Button } from "./ui/button";
 import {
     Dialog,
@@ -13,6 +13,7 @@ import {
 
 export default function DialogLogout() {
     const { setIsAuth } = useUser();
+
     const onLogout = async () => {
         const isLogout = await logout();
         if (isLogout.success) {
