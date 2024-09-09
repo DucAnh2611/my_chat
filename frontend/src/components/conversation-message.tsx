@@ -8,14 +8,16 @@ import { IMember } from "@/interface/member";
 import { IMessage } from "@/interface/message";
 import { isTimeDifferenceMoreThanXMinutes } from "@/lib/time";
 import dayjs from "dayjs";
-import { LoaderIcon } from "lucide-react";
-import { Fragment, UIEvent, useEffect, useState } from "react";
+import { ArrowDown, LoaderIcon } from "lucide-react";
+import { Fragment, UIEvent, useEffect, useRef, useState } from "react";
 import MemberMessage from "./member-message";
+import { Button } from "./ui/button";
 
 export default function ConversationMessage() {
     const { conversation } = useConversation();
     const { me } = useUser();
     const { socket, isConnected } = useSocket();
+    const scrollRef = useRef<HTMLDivElement | null>(null);
 
     const [conv, SetConv] = useState<IConversationDetail>();
     const [messages, SetMessages] = useState<IMessage[]>([]);
@@ -23,6 +25,7 @@ export default function ConversationMessage() {
     const [join, SetJoin] = useState<boolean>(false);
     const [skip, SetSkip] = useState<number>(0);
     const [canScroll, SetCanScroll] = useState<boolean>(true);
+    const [isScrollUp, SetIsScrollUp] = useState<boolean>(false);
 
     const getConversationMessage = async (id: string, skip: number) => {
         if (!loading && canScroll) {
@@ -47,13 +50,25 @@ export default function ConversationMessage() {
 
     const handleScroll = (e: UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
+        SetIsScrollUp(true);
 
         if (
-            -target.scrollTop + target.clientHeight >= target.scrollHeight &&
+            -target.scrollTop + target.clientHeight >=
+                target.scrollHeight * 0.95 &&
             !loading &&
             canScroll
         ) {
+            SetIsScrollUp(true);
             SetSkip(messages.length);
+        } else if (-target.scrollTop + target.clientHeight <= 200) {
+            SetIsScrollUp(false);
+        }
+    };
+
+    const handleClickScrollBottom = () => {
+        SetIsScrollUp(true);
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = 0;
         }
     };
 
@@ -120,57 +135,72 @@ export default function ConversationMessage() {
     }
 
     return (
-        <div
-            className="w-full h-full box-border px-2 py-2 tablet:p-[4px_4px] flex flex-col-reverse gap-1 overflow-auto overflow-x-hidden"
-            onScroll={handleScroll}
-            onTouchMove={handleScroll}
-        >
-            {messages.map((message, index) => (
-                <Fragment key={message._id}>
-                    <MemberMessage
-                        message={message}
-                        meId={me._id}
-                        isLink={
-                            messages[index + 1] &&
-                            messages[index + 1].member._id ===
-                                message.member._id &&
-                            !isTimeDifferenceMoreThanXMinutes(
-                                messages[index + 1].sentAt,
-                                message.sentAt,
-                                15
-                            )
-                        }
-                        key={message._id}
-                    />
-                    {messages[index + 1] &&
-                    isTimeDifferenceMoreThanXMinutes(
-                        messages[index + 1].sentAt,
-                        message.sentAt,
-                        15
-                    ) ? (
-                        <p className="w-full text-xs text-muted-foreground text-center my-3">
-                            {dayjs(message.sentAt).format(
-                                dayjs(message.sentAt).isSame(
-                                    dayjs(new Date()),
-                                    "date"
+        <>
+            <div
+                ref={scrollRef}
+                className="w-full h-full box-border px-2 py-2 tablet:p-[4px_4px] flex flex-col-reverse gap-1 overflow-auto relative"
+                onScroll={handleScroll}
+                onTouchMove={handleScroll}
+            >
+                {messages.map((message, index) => (
+                    <Fragment key={message._id}>
+                        <MemberMessage
+                            message={message}
+                            meId={me._id}
+                            isLink={
+                                messages[index + 1] &&
+                                messages[index + 1].member._id ===
+                                    message.member._id &&
+                                !isTimeDifferenceMoreThanXMinutes(
+                                    messages[index + 1].sentAt,
+                                    message.sentAt,
+                                    15
                                 )
-                                    ? "HH:mm A"
-                                    : "dddd, MMMM D, YYYY h:mm A"
-                            )}
-                        </p>
-                    ) : (
-                        <></>
-                    )}
-                </Fragment>
-            ))}
-            {loading && canScroll && (
-                <div className="flex items-center justify-center w-full h-fit py-5">
-                    <div className="flex gap-1 h-fit items-center">
-                        <LoaderIcon className="animate-spin w-4 h-4" />
-                        <p className="text-sm">Đang tải thêm</p>
+                            }
+                            key={message._id}
+                        />
+                        {messages[index + 1] &&
+                        isTimeDifferenceMoreThanXMinutes(
+                            messages[index + 1].sentAt,
+                            message.sentAt,
+                            15
+                        ) ? (
+                            <p className="w-full text-xs text-muted-foreground text-center my-3">
+                                {dayjs(message.sentAt).format(
+                                    dayjs(message.sentAt).isSame(
+                                        dayjs(new Date()),
+                                        "date"
+                                    )
+                                        ? "HH:mm A"
+                                        : "dddd, MMMM D, YYYY h:mm A"
+                                )}
+                            </p>
+                        ) : (
+                            <></>
+                        )}
+                    </Fragment>
+                ))}
+                {loading && (
+                    <div className="flex items-center justify-center w-full h-fit py-5">
+                        <div className="flex gap-1 h-fit items-center">
+                            <LoaderIcon className="animate-spin w-4 h-4" />
+                            <p className="text-sm">Đang tải</p>
+                        </div>
                     </div>
+                )}
+            </div>
+            {isScrollUp && (
+                <div className="absolute right-5 bottom-5 z-10">
+                    <Button
+                        onClick={handleClickScrollBottom}
+                        variant="default"
+                        size="icon"
+                        className="rounded-full shadow-xl"
+                    >
+                        <ArrowDown size={15} />
+                    </Button>
                 </div>
             )}
-        </div>
+        </>
     );
 }

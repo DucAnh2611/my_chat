@@ -14,7 +14,7 @@ export default function ConversationHolder({ children }: IConversationHolder) {
     return (
         <div className="w-full h-full">
             <ConversationProvider>
-                <div className="flex overflow-hidden w-full h-full gap-3">
+                <div className="flex overflow-y-hidden w-full h-full gap-3">
                     <ConversationList />
                     <Card
                         className={cn(

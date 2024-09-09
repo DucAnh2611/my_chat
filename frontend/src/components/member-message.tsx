@@ -153,21 +153,10 @@ export default function MemberMessage({
                     </div>
                 )}
                 <div
-                    ref={dragRef}
-                    style={{
-                        transform: `translate(${position.x}px, ${position.y}px)`,
-                    }}
                     className={cn(
                         "flex flex-col gap-0.5 w-fit max-w-[60%] max-tablet:max-w-[80%]",
                         isMeSent ? "items-end" : "items-start"
                     )}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove(isMeSent ? "l" : "r")}
-                    onMouseUp={handleMouseUp(message)}
-                    onMouseLeave={handleMouseUp(message)}
-                    onTouchStart={handleMouseDown}
-                    onTouchMove={handleMouseMove(isMeSent ? "l" : "r")}
-                    onTouchEnd={handleMouseUp(message)}
                 >
                     {!!message.reply && (
                         <div
@@ -280,9 +269,10 @@ export default function MemberMessage({
                                                 : "items-start"
                                         )}
                                     >
-                                        <p
-                                            style={
-                                                isMeSent
+                                        <div
+                                            ref={dragRef}
+                                            style={{
+                                                ...(isMeSent
                                                     ? {
                                                           background:
                                                               theme.sender
@@ -302,10 +292,11 @@ export default function MemberMessage({
                                                                   .border,
                                                           color: theme.receiver
                                                               .text,
-                                                      }
-                                            }
+                                                      }),
+                                                transform: `translate(${position.x}px, ${position.y}px)`,
+                                            }}
                                             className={cn(
-                                                "text-sm font-normal w-fit rounded-xl border px-2 py-1 whitespace-pre-wrap break-words overflow-hidden",
+                                                "min-h-[2rem] text-sm font-normal w-fit rounded-xl border px-2 py-1 whitespace-pre-wrap break-words overflow-hidden",
                                                 isMeSent
                                                     ? "rounded-r-sm"
                                                     : "rounded-l-sm",
@@ -315,9 +306,22 @@ export default function MemberMessage({
                                                         : "rounded-r-md"
                                                     : ""
                                             )}
+                                            onMouseDown={handleMouseDown}
+                                            onMouseMove={handleMouseMove(
+                                                isMeSent ? "l" : "r"
+                                            )}
+                                            onMouseUp={handleMouseUp(message)}
+                                            onMouseLeave={handleMouseUp(
+                                                message
+                                            )}
+                                            onTouchStart={handleMouseDown}
+                                            onTouchMove={handleMouseMove(
+                                                isMeSent ? "l" : "r"
+                                            )}
+                                            onTouchEnd={handleMouseUp(message)}
                                         >
-                                            {message.text}
-                                        </p>
+                                            <p>{message.text}</p>
+                                        </div>
                                         {foundLinks.length !== 0 && (
                                             <div
                                                 className={cn(
@@ -351,7 +355,10 @@ export default function MemberMessage({
                                     </div>
                                 </div>
                             </TooltipTrigger>
-                            <TooltipContent side="left" align="center">
+                            <TooltipContent
+                                side={isMeSent ? "left" : "right"}
+                                align="center"
+                            >
                                 <p className="w-fit whitespace-nowrap text-xs group-hover:block hidden duration-50">
                                     {dayjs(new Date(message.sentAt)).format(
                                         "HH:mm:ss A, MM/DD/YYYY"
