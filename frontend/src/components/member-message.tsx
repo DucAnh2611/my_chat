@@ -1,5 +1,6 @@
 import { joinApiUrl } from "@/constant/api";
 import useConversation from "@/hook/useConversation";
+import useDeviceType, { DeviceType } from "@/hook/useDevice";
 import { IMessage } from "@/interface/message";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
@@ -34,23 +35,28 @@ export default function MemberMessage({
     isLink,
 }: IMemerMessageProps) {
     const { conversation, setReply } = useConversation();
+    const deviceType = useDeviceType();
     const dragRef = useRef<HTMLDivElement | null>(null);
 
-    const [foundLinks, setFoundLinks] = useState<string[]>([]);
-    const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [startPosition, setStartPosition] = useState<Position>({
+    const [foundLinks, SetFoundLinks] = useState<string[]>([]);
+    const [position, SetPosition] = useState<Position>({ x: 0, y: 0 });
+    const [isDragging, SetIsDragging] = useState<boolean>(false);
+    const [startPosition, SetStartPosition] = useState<Position>({
         x: 0,
         y: 0,
     });
 
+    const allowDragReply: DeviceType[] = ["mobile", "tablet"];
+
     const handleMouseDown = (
         e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>
     ) => {
-        setIsDragging(true);
+        if (allowDragReply.includes(deviceType)) {
+            SetIsDragging(true);
+        }
 
         const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-        setStartPosition({ x: clientX, y: 0 });
+        SetStartPosition({ x: clientX, y: 0 });
     };
 
     const handleMouseMove =
@@ -63,9 +69,9 @@ export default function MemberMessage({
                 const dx = clientX - startPosition.x;
 
                 if (side === "l" && dx < 0) {
-                    setPosition({ x: dx < maxDrag ? maxDrag : dx, y: 0 });
+                    SetPosition({ x: dx < maxDrag ? maxDrag : dx, y: 0 });
                 } else if (side === "r" && dx > 0) {
-                    setPosition({ x: dx > maxDrag ? maxDrag : dx, y: 0 });
+                    SetPosition({ x: dx > maxDrag ? maxDrag : dx, y: 0 });
                 }
             }
         };
@@ -78,14 +84,14 @@ export default function MemberMessage({
                 setReply(message);
             }
 
-            setPosition({ x: 0, y: 0 });
-            setIsDragging(false);
+            SetPosition({ x: 0, y: 0 });
+            SetIsDragging(false);
         }
     };
 
     const checkForLinks = (inputText: string) => {
         const links = inputText.match(URL_REGEX) || [];
-        setFoundLinks(links);
+        SetFoundLinks(links);
     };
 
     const handleClickReply = (message: IMessage) => () => {
@@ -104,7 +110,7 @@ export default function MemberMessage({
 
     return (
         <div className={cn(isLink ? "" : "mt-2")}>
-            {!isLink && !isMeSent && (
+            {!isLink && !isMeSent && !message.reply && (
                 <div className={cn("w-full flex gap-2")}>
                     <div className="w-8" />
                     <p className="text-[10px] text-muted-foreground">

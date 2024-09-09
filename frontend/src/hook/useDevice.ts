@@ -7,10 +7,21 @@ const breakpoints = {
     desktop: 1024,
 };
 
-type DeviceType = "mobile" | "tablet" | "desktop" | "largeDesktop";
+export type DeviceType = "mobile" | "tablet" | "desktop" | "largeDesktop";
 
 const useDeviceType = (): DeviceType => {
-    const [deviceType, setDeviceType] = useState<DeviceType>("desktop");
+    const [deviceType, setDeviceType] = useState<DeviceType>(() => {
+        const width = window.innerWidth;
+        if (width <= breakpoints.mobile) {
+            return "mobile";
+        } else if (width <= breakpoints.tablet) {
+            return "tablet";
+        } else if (width <= breakpoints.desktop) {
+            return "desktop";
+        } else {
+            return "largeDesktop";
+        }
+    });
 
     const handleResize = () => {
         const width = window.innerWidth;
@@ -27,8 +38,6 @@ const useDeviceType = (): DeviceType => {
     };
 
     useEffect(() => {
-        handleResize();
-
         window.addEventListener("resize", handleResize);
 
         return () => {

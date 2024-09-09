@@ -29,6 +29,7 @@ export default function ConversationSend() {
 
     const handleSend = async () => {
         if (conversation) {
+            SetMessage("");
             await send({
                 text: message,
                 type: "TEXT",
@@ -45,7 +46,6 @@ export default function ConversationSend() {
             const sent = await sendMessage(message);
 
             if (sent.success) {
-                SetMessage("");
                 setReply(null);
             }
         }
