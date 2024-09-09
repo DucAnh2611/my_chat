@@ -148,7 +148,6 @@ const ConversationService = {
             .select({ _id: true, text: true, type: true, sentAt: true })
             .limit(1)
             .sort({ sentAt: -1 })
-            .populate("seens", "_id nickname avatar user")
             .populate("member", "_id nickname");
 
         return {

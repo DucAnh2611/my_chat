@@ -36,6 +36,7 @@ export default function ConversationMessage() {
             if (messages.length + items.length >= skip) {
                 SetMessages((msg) => [...msg, ...items]);
                 SetSkip(skip);
+                SetCanScroll(true);
             } else if (!items.length) {
                 SetCanScroll(false);
             }
