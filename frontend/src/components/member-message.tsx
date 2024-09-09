@@ -80,7 +80,7 @@ export default function MemberMessage({
         if (isDragging) {
             const dragDistance = Math.abs(position.x);
 
-            if (dragDistance >= 30) {
+            if (dragDistance >= 60) {
                 setReply(message);
             }
 

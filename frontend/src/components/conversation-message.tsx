@@ -66,7 +66,7 @@ export default function ConversationMessage() {
     };
 
     const handleClickScrollBottom = () => {
-        SetIsScrollUp(true);
+        SetIsScrollUp(false);
         if (scrollRef.current) {
             scrollRef.current.scrollTop = 0;
         }
