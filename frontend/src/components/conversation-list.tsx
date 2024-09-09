@@ -72,7 +72,6 @@ export default function ConversationList() {
                                 : c.lastestMessage,
                     }))
                 );
-                console.log(message);
             }
         );
         return () => {

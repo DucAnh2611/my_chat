@@ -48,6 +48,8 @@ export default function ConversationMessage() {
     const handleScroll = (e: UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
 
+        console.log(loading, canScroll);
+
         if (
             -target.scrollTop + target.clientHeight >= target.scrollHeight &&
             !loading &&
