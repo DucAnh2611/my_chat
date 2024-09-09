@@ -48,8 +48,6 @@ export default function ConversationMessage() {
     const handleScroll = (e: UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
 
-        console.log(loading, canScroll);
-
         if (
             -target.scrollTop + target.clientHeight >= target.scrollHeight &&
             !loading &&
@@ -125,6 +123,7 @@ export default function ConversationMessage() {
         <div
             className="w-full h-full box-border px-2 py-2 tablet:p-[4px_4px] flex flex-col-reverse gap-1 overflow-auto overflow-x-hidden"
             onScroll={handleScroll}
+            onTouchMove={handleScroll}
         >
             {messages.map((message, index) => (
                 <Fragment key={message._id}>
