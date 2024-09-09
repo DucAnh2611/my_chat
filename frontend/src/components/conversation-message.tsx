@@ -121,7 +121,7 @@ export default function ConversationMessage() {
 
     return (
         <div
-            className="w-full h-full box-border px-4 py-4 flex flex-col-reverse gap-1 overflow-auto overflow-x-hidden"
+            className="w-full h-full box-border px-2 py-2 tablet:p-[4px_4px] flex flex-col-reverse gap-1 overflow-auto overflow-x-hidden"
             onScroll={handleScroll}
         >
             {messages.map((message, index) => (

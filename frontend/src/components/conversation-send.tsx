@@ -91,19 +91,19 @@ export default function ConversationSend() {
                     </Button>
                 </div>
             )}
-            <div className=" flex gap-0.5 items-start ">
+            <div className=" flex laptop:gap-0.5 items-start ">
                 <div className="flex gap-0 items-start">
                     <Button
-                        size="sm"
+                        size="icon"
                         variant="ghost"
-                        className="text-primary rounded-full group/b-f gap-2 "
+                        className="text-primary rounded-full group/b-f gap-2 !p-2 w-fit h-fit laptop:!p-3"
                     >
                         <ImageIcon size={15} />
                     </Button>
                     <Button
-                        size="sm"
+                        size="icon"
                         variant="ghost"
-                        className="text-primary rounded-full group/b-f gap-2 "
+                        className="text-primary rounded-full group/b-f gap-2 !p-2 w-fit h-fit laptop:!p-3"
                     >
                         <MicIcon size={15} />
                     </Button>
@@ -128,14 +128,19 @@ export default function ConversationSend() {
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="rounded-full"
+                            className="text-primary rounded-full group/b-f gap-2 !p-2 w-fit h-fit laptop:!p-3"
                         >
                             <SmileIcon size={15} />
                         </Button>
                     }
                 />
                 <div>
-                    <Button size="icon" variant="ghost" onClick={handleSend}>
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={handleSend}
+                        className="text-primary rounded-full group/b-f gap-2 !p-2 w-fit h-fit laptop:!p-3"
+                    >
                         {message.length !== 0 ? (
                             <SendHorizonal size={15} />
                         ) : (
