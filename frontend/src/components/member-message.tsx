@@ -361,7 +361,7 @@ export default function MemberMessage({
                             >
                                 <p className="w-fit whitespace-nowrap text-xs group-hover:block hidden duration-50">
                                     {dayjs(new Date(message.sentAt)).format(
-                                        "HH:mm:ss A, MM/DD/YYYY"
+                                        "HH:mm:ss A, DD/MM/YYYY"
                                     )}
                                 </p>
                             </TooltipContent>

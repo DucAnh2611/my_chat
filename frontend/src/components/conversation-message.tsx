@@ -57,17 +57,23 @@ export default function ConversationMessage() {
             !loading &&
             canScroll
         ) {
-            SetIsScrollUp(true);
             SetSkip(messages.length);
-        } else if (-target.scrollTop + target.clientHeight <= 200) {
+        }
+
+        if (-target.scrollTop <= 200) {
             SetIsScrollUp(false);
+        } else {
+            SetIsScrollUp(true);
         }
     };
 
     const handleClickScrollBottom = () => {
         SetIsScrollUp(false);
         if (scrollRef.current) {
-            scrollRef.current.scrollTop = 0;
+            scrollRef.current.scrollTo({
+                top: scrollRef.current.scrollHeight,
+                behavior: "smooth",
+            });
         }
     };
 
@@ -137,7 +143,7 @@ export default function ConversationMessage() {
         <>
             <div
                 ref={scrollRef}
-                className="w-full h-full box-border px-2 py-2 tablet:p-[4px_4px] flex flex-col-reverse gap-1 overflow-auto relative"
+                className="w-full h-full box-border px-2 py-2 tablet:p-[4px_4px] flex flex-col-reverse gap-1 overflow-auto relative scroll-smooth"
                 onScroll={handleScroll}
                 onTouchMove={handleScroll}
             >

@@ -232,7 +232,7 @@ export default function ConversationList() {
                                                         "date"
                                                     )
                                                         ? ""
-                                                        : "MM/DD/YYYY"
+                                                        : "DD/mm/YYYY"
                                                 }`
                                             )}
                                         </p>
