@@ -117,12 +117,7 @@ export default function MemberMessage({
                         >
                             <div className="w-full flex gap-1 items-center">
                                 <div className="w-5 h-5">
-                                    <Avatar
-                                        className={cn(
-                                            "w-full h-full",
-                                            isLink ? "invisible" : "visible"
-                                        )}
-                                    >
+                                    <Avatar className={cn("w-full h-full")}>
                                         <AvatarImage
                                             src={joinApiUrl(
                                                 "media",

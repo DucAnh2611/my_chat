@@ -16,7 +16,7 @@ AuthRouter.post("/login", async (req, res) => {
         res.cookie(appConfigs.cookies.name, refreshToken, {
             maxAge: convertTime(appConfigs.token.refresh.expire, "ms"),
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: "none",
         });
 
@@ -35,7 +35,7 @@ AuthRouter.get("/refresh", refreshTokenCheck, async (req, res) => {
         res.cookie(appConfigs.cookies.name, refreshToken, {
             maxAge: convertTime(appConfigs.token.refresh.expire, "ms"),
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: "none",
         });
 
