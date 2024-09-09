@@ -50,7 +50,6 @@ export default function ConversationMessage() {
 
     const handleScroll = (e: UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
-        SetIsScrollUp(true);
 
         if (
             -target.scrollTop + target.clientHeight >=
