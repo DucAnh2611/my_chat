@@ -36,15 +36,17 @@ export default function ConversationMessage() {
             if (messages.length + items.length >= skip) {
                 SetMessages((msg) => [...msg, ...items]);
                 SetSkip(skip);
-            } else {
+            } else if (!items.length) {
                 SetCanScroll(false);
             }
         }
 
         SetLoading(false);
     };
+
     const handleScroll = (e: UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
+
         if (
             -target.scrollTop + target.clientHeight >= target.scrollHeight &&
             !loading &&
@@ -118,7 +120,7 @@ export default function ConversationMessage() {
 
     return (
         <div
-            className="w-full h-full box-border px-4 py-4 flex flex-col-reverse gap-1 overflow-auto"
+            className="w-full h-full box-border px-4 py-4 flex flex-col-reverse gap-1 overflow-auto overflow-x-hidden"
             onScroll={handleScroll}
         >
             {messages.map((message, index) => (

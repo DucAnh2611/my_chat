@@ -32,6 +32,7 @@ export default function UserProvider({ children }: { children: ReactNode }) {
                 const m = me.result;
                 SetMe({ ...m, isMe: Boolean(JSON.parse(`${m.isMe}`)) });
                 SetToken(localstorage);
+                SetIsAuth(true);
             }
         }
     };

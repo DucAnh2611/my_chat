@@ -39,11 +39,9 @@ const MessageService = {
 
         const newMessage = new MessageModel({
             conversation: conversationId,
-            emotes: [],
             isDelete: false,
             isPin: false,
             pinBy: undefined,
-            seens: [],
             text,
             type: type,
             reply: replyId || null,

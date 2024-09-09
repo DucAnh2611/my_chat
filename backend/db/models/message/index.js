@@ -12,8 +12,6 @@ const MessageSchema = new mongoose.Schema({
     },
     text: { type: String, required: true },
     type: { type: String, enum: Object.values(MESSAGE_CONSTANT.TYPES) },
-    emotes: [{ type: Schema.Types.ObjectId, ref: "icon" }],
-    seens: [{ type: Schema.Types.ObjectId, ref: "member" }],
     reply: {
         type: Schema.Types.ObjectId,
         ref: "message",

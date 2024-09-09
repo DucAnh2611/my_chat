@@ -4,7 +4,7 @@ import { IMessage } from "@/interface/message";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import { Reply, SmilePlus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { MouseEvent, TouchEvent, useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -20,6 +20,12 @@ interface IMemerMessageProps {
     meId: string;
     isLink: boolean;
 }
+
+interface Position {
+    x: number;
+    y: number;
+}
+
 const URL_REGEX = /(https?:\/\/[^\s]*)/g;
 
 export default function MemberMessage({
@@ -27,8 +33,55 @@ export default function MemberMessage({
     meId,
     isLink,
 }: IMemerMessageProps) {
-    const [foundLinks, setFoundLinks] = useState<string[]>([]);
     const { conversation, setReply } = useConversation();
+    const dragRef = useRef<HTMLDivElement | null>(null);
+
+    const [foundLinks, setFoundLinks] = useState<string[]>([]);
+    const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [startPosition, setStartPosition] = useState<Position>({
+        x: 0,
+        y: 0,
+    });
+
+    const handleMouseDown = (
+        e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>
+    ) => {
+        setIsDragging(true);
+
+        const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+        setStartPosition({ x: clientX, y: 0 });
+    };
+
+    const handleMouseMove =
+        (side: "r" | "l") =>
+        (e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>) => {
+            if (isDragging) {
+                const clientX =
+                    "touches" in e ? e.touches[0].clientX : e.clientX;
+                const maxDrag = 100 * (side === "l" ? -1 : 1);
+                const dx = clientX - startPosition.x;
+
+                if (side === "l" && dx < 0) {
+                    setPosition({ x: dx < maxDrag ? maxDrag : dx, y: 0 });
+                } else if (side === "r" && dx > 0) {
+                    setPosition({ x: dx > maxDrag ? maxDrag : dx, y: 0 });
+                }
+            }
+        };
+
+    const handleMouseUp = (message: IMessage) => () => {
+        if (isDragging) {
+            const dragDistance = Math.abs(position.x);
+
+            if (dragDistance >= 30) {
+                setReply(message);
+            }
+
+            setPosition({ x: 0, y: 0 });
+            setIsDragging(false);
+        }
+    };
 
     const checkForLinks = (inputText: string) => {
         const links = inputText.match(URL_REGEX) || [];
@@ -59,9 +112,7 @@ export default function MemberMessage({
         >
             {!isMeSent && (
                 <div
-                    className={cn(
-                        "relative h-auto  flex items-end justify-end"
-                    )}
+                    className={cn("relative h-auto flex items-end justify-end")}
                 >
                     <div className="w-8 h-8">
                         <Avatar
@@ -86,21 +137,34 @@ export default function MemberMessage({
                 </div>
             )}
             <div
+                ref={dragRef}
+                style={{
+                    transform: `translate(${position.x}px, ${position.y}px)`,
+                }}
                 className={cn(
-                    "flex flex-col gap-0.5 w-fit max-w-[60%] max-tablet:max-w-[60%]",
+                    "flex flex-col gap-0.5 w-fit max-w-[60%] max-tablet:max-w-[80%]",
                     isMeSent ? "items-end" : "items-start"
                 )}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove(isMeSent ? "l" : "r")}
+                onMouseUp={handleMouseUp(message)}
+                onMouseLeave={handleMouseUp(message)}
+                onTouchStart={handleMouseDown}
+                onTouchMove={handleMouseMove(isMeSent ? "l" : "r")}
+                onTouchEnd={handleMouseUp(message)}
             >
                 {!!message.reply && (
                     <div
                         className={cn(
-                            "flex flex-col  group/reply",
+                            "flex flex-col group/reply mt-1 max-w-[80%]",
                             isMeSent ? "items-end" : "items-start"
                         )}
                     >
-                        <div className="flex gap-1 items-center">
+                        <div className="flex gap-1 items-center mb-0.5">
                             <Reply size={10} />
-                            <p className="text-xs">Đã trả lời </p>
+                            <p className="text-[10px] text-muted-foreground">
+                                Đã trả lời{" "}
+                            </p>
                         </div>
                         <div
                             style={{
@@ -111,7 +175,7 @@ export default function MemberMessage({
                                 }`,
                             }}
                             className={cn(
-                                "rounded-xl box-border p-2 opacity-60 flex flex-col items-center gap-1 mt-1",
+                                "rounded-xl box-border p-2 opacity-60 flex flex-col items-center gap-1",
                                 isMeSent ? "rounded-br-sm" : "rounded-bl-sm"
                             )}
                         >
@@ -170,7 +234,7 @@ export default function MemberMessage({
                             >
                                 <div
                                     className={cn(
-                                        "invisible gap-0 flex items-center group-hover:visible",
+                                        "invisible gap-0 flex items-center laptop:group-hover:visible",
                                         isMeSent
                                             ? "justify-end flex-row-reverse"
                                             : "justify-start flex-row"

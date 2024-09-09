@@ -57,7 +57,7 @@ export default function ConversationHeader() {
                     </p>
                 </div>
             </div>
-            <div>
+            <div className="hidden laptop:flex">
                 <Button
                     size="icon"
                     variant="ghost"
